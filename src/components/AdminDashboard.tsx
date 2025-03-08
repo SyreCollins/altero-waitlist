@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
 export default function AdminDashboard() {
-  const { waitlistEntries, refreshWaitlist } = useWaitlist();
+  const { waitlistEntries, refreshWaitlist, waitlistCount } = useWaitlist();
   const { logout } = useAdmin();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +63,12 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <h2 className="text-xl font-semibold">Waitlist Management</h2>
-                <p className="text-gray-400 text-sm">View and manage waitlist sign-ups</p>
+                <p className="text-gray-400 text-sm">
+                  View and manage waitlist sign-ups 
+                  <span className="ml-2 bg-finance-600/20 px-2 py-0.5 rounded-full text-finance-500 text-xs font-medium">
+                    {waitlistCount} {waitlistCount === 1 ? 'subscriber' : 'subscribers'}
+                  </span>
+                </p>
               </div>
             </div>
             <div className="flex gap-3">
