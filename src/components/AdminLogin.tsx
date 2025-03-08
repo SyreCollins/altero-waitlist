@@ -7,8 +7,15 @@ import { useNavigate } from 'react-router-dom';
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAdmin();
+  const { login, isAuthenticated } = useAdmin();
   const navigate = useNavigate();
+
+  // Check if already authenticated and redirect
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
