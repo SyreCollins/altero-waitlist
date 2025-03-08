@@ -1,0 +1,7 @@
+
+# Waitlist Emails
+# This file simulates a storage for email addresses
+# In a real application, you would use a database or secure storage
+
+# Format: email,date_added
+

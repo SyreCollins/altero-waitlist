@@ -1,13 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useEffect } from 'react';
+import NavBar from '@/components/NavBar';
+import Hero from '@/components/Hero';
+import Features from '@/components/Features';
+import AppShowcase from '@/components/AppShowcase';
+import Waitlist from '@/components/Waitlist';
+import Footer from '@/components/Footer';
+import { WaitlistProvider } from '@/components/WaitlistContext';
+import { useLazyLoadImage } from '@/utils/animation';
 
 const Index = () => {
+  useLazyLoadImage();
+
+  useEffect(() => {
+    // Set page title
+    document.title = 'FinanceGarden - Grow Your Financial Future';
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <WaitlistProvider>
+      <div className="min-h-screen bg-dark-950 text-white overflow-x-hidden">
+        <NavBar />
+        <Hero />
+        <Features />
+        <AppShowcase />
+        <Waitlist />
+        <Footer />
       </div>
-    </div>
+    </WaitlistProvider>
   );
 };
 
