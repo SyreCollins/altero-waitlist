@@ -19,23 +19,24 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-5">
               <div className="h-10 w-10 bg-gradient-to-br from-finance-400 to-finance-600 rounded-xl flex items-center justify-center">
-                <span className="font-bold text-white">FG</span>
+                <span className="font-bold text-white">A</span>
               </div>
-              <span className="text-white font-bold text-xl">FinanceGarden</span>
+              <span className="text-white font-bold text-xl">Altero</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
               Helping you grow your financial future with powerful tools and expert insights.
             </p>
             <div className="flex space-x-4">
               {[
-                { icon: Facebook, href: '#' },
-                { icon: Twitter, href: '#' },
-                { icon: Instagram, href: '#' },
-                { icon: Linkedin, href: '#' },
+                { icon: Facebook, href: '#', label: 'Facebook' },
+                { icon: Twitter, href: '#', label: 'Twitter' },
+                { icon: Instagram, href: '#', label: 'Instagram' },
+                { icon: Linkedin, href: '#', label: 'LinkedIn' },
               ].map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
+                  aria-label={social.label}
                   className="h-10 w-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all"
                 >
                   <social.icon size={18} />
@@ -86,13 +87,14 @@ export default function Footer() {
         
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} FinanceGarden. All rights reserved.
+            © {new Date().getFullYear()} Altero. All rights reserved.
           </p>
           
           <div className="flex items-center gap-6">
             <button
               onClick={scrollToTop}
               className="h-10 w-10 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all"
+              aria-label="Scroll to top"
             >
               <ArrowUp size={18} />
             </button>

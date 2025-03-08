@@ -14,7 +14,31 @@ const Index = () => {
 
   useEffect(() => {
     // Set page title
-    document.title = 'FinanceGarden - Grow Your Financial Future';
+    document.title = 'Altero - Grow Your Financial Future';
+    
+    // Add structured data for better SEO
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Altero",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Take control of your financial future with powerful tools for budgeting, investing, and wealth building all in one beautiful app."
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
 
   return (

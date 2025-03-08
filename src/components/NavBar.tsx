@@ -40,9 +40,9 @@ export default function NavBar() {
         <div className="flex items-center">
           <a href="#" className="flex items-center space-x-2">
             <div className="h-10 w-10 bg-gradient-to-br from-finance-400 to-finance-600 rounded-xl flex items-center justify-center">
-              <span className="font-bold text-white">FG</span>
+              <span className="font-bold text-white">A</span>
             </div>
-            <span className="text-white font-bold text-xl">FinanceGarden</span>
+            <span className="text-white font-bold text-xl">Altero</span>
           </a>
         </div>
 
@@ -69,6 +69,7 @@ export default function NavBar() {
           type="button" 
           className="md:hidden text-gray-300 hover:text-white"
           onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>

@@ -53,8 +53,10 @@ export function useLazyLoadImage() {
     if ('loading' in HTMLImageElement.prototype) {
       const images = document.querySelectorAll('img[loading="lazy"]');
       images.forEach(img => {
-        if (img.dataset.src) {
-          img.src = img.dataset.src;
+        // Fix type errors by properly casting Element to HTMLImageElement
+        const imgElement = img as HTMLImageElement;
+        if (imgElement.dataset.src) {
+          imgElement.src = imgElement.dataset.src;
         }
       });
     } else {
