@@ -60,8 +60,8 @@ export default function AppShowcase() {
         >
           <div className="app-screen relative rounded-[2rem] border-8 border-dark-800 overflow-hidden shadow-2xl transition-all duration-300 transform scale-75 md:scale-90 opacity-40 md:opacity-60">
             <img 
-              src="https://i.ibb.co/1Gbt7mj/finance-screen1.png" 
-              alt="Dashboard screen" 
+              src="https://i.ibb.co/mrcYbStr/D1-B0-A891-AE55-43-A4-8260-3-EFA13-A58131.jpg" 
+              alt="Welcome screen" 
               className="w-full h-auto"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10"></div>
@@ -69,7 +69,7 @@ export default function AppShowcase() {
           
           <div className="app-screen relative rounded-[2rem] border-8 border-dark-800 overflow-hidden shadow-2xl transition-all duration-300 transform scale-85 md:scale-100 z-10">
             <img 
-              src="https://i.ibb.co/nLjdNnB/finance-garden-mockup.png" 
+              src="https://i.ibb.co/WWz2t1bf/B811-A8-DC-907-D-4-F5-C-968-C-9-C5-ADCC1-CBD0.jpg" 
               alt="Main app screen" 
               className="w-full h-auto"
             />
