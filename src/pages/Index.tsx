@@ -17,6 +17,32 @@ const Index = () => {
     // Set page title
     document.title = 'Altero - Grow Your Financial Future';
     
+    // Update meta tags dynamically to ensure correct Open Graph images
+    const updateMetaTags = () => {
+      // Update OG image
+      const ogImageMeta = document.querySelector('meta[property="og:image"]');
+      if (ogImageMeta) {
+        ogImageMeta.setAttribute('content', window.location.origin + '/og-image.png');
+      }
+      
+      // Update Twitter image
+      const twitterImageMeta = document.querySelector('meta[property="twitter:image"]');
+      if (twitterImageMeta) {
+        twitterImageMeta.setAttribute('content', window.location.origin + '/og-image.png');
+      }
+      
+      // Update URLs
+      const ogUrlMeta = document.querySelector('meta[property="og:url"]');
+      const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]');
+      const canonicalLink = document.querySelector('link[rel="canonical"]');
+      
+      if (ogUrlMeta) ogUrlMeta.setAttribute('content', window.location.href);
+      if (twitterUrlMeta) twitterUrlMeta.setAttribute('content', window.location.href);
+      if (canonicalLink) canonicalLink.setAttribute('href', window.location.href);
+    };
+    
+    updateMetaTags();
+    
     // Add structured data for better SEO
     const structuredData = {
       "@context": "https://schema.org",
@@ -29,7 +55,8 @@ const Index = () => {
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "Take control of your financial future with powerful tools for budgeting, investing, and wealth building all in one beautiful app."
+      "description": "Take control of your financial future with powerful tools for budgeting, investing, and wealth building all in one beautiful app.",
+      "image": window.location.origin + "/og-image.png"
     };
 
     const script = document.createElement('script');
