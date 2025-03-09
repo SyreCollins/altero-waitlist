@@ -23,7 +23,7 @@ const Index = () => {
       "@type": "SoftwareApplication",
       "name": "Altero",
       "applicationCategory": "FinanceApplication",
-      "operatingSystem": "iOS, Android",
+      "operatingSystem": "iOS, Android, Web",
       "offers": {
         "@type": "Offer",
         "price": "0",
