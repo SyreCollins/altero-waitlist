@@ -68,6 +68,33 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateWaitlistFile = async (entries: WaitlistEntry[]): Promise<boolean> => {
+    try {
+      // In a real application, this would be a server-side API call
+      // For this demo, we'll simulate updating the file through localStorage
+      
+      // Convert entries back to file format
+      const headerComments = 
+        "# Waitlist Emails\n" +
+        "# This file simulates a storage for email addresses\n" +
+        "# In a real application, you would use a database or secure storage\n\n" +
+        "# Format: email,date_added\n\n";
+      
+      const entryLines = entries.map(entry => `${entry.email},${entry.date}`).join('\n');
+      const fileContent = headerComments + entryLines + "\n\n";
+      
+      // Store the updated content in localStorage as a simulation
+      localStorage.setItem('waitlist-data', fileContent);
+      
+      // In a real app, you would make an API call here to update the actual file
+      // For the demo, we'll consider this a successful update
+      return true;
+    } catch (error) {
+      console.error("Error updating waitlist file:", error);
+      return false;
+    }
+  };
+
   const joinWaitlist = async (email: string): Promise<boolean> => {
     setLoading(true);
     
@@ -75,25 +102,33 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // In a real app, this would be a server-side API call to add the email to the waitlist.txt file
-      // For this demo, we'll just update our local state
+      // Create new entry
       const newEntry = {
         email,
         date: new Date().toISOString()
       };
       
-      setWaitlistEntries(prev => [...prev, newEntry]);
+      // Update local state
+      const updatedEntries = [...waitlistEntries, newEntry];
+      setWaitlistEntries(updatedEntries);
       setWaitlistCount(prev => prev + 1);
       
-      console.log(`Email added to waitlist: ${email}`);
+      // Update the file (simulation)
+      const fileUpdated = await updateWaitlistFile(updatedEntries);
       
-      toast({
-        title: "Success!",
-        description: "You've been added to the waitlist.",
-        variant: "default",
-      });
-      
-      return true;
+      if (fileUpdated) {
+        console.log(`Email added to waitlist: ${email}`);
+        
+        toast({
+          title: "Success!",
+          description: "You've been added to the waitlist.",
+          variant: "default",
+        });
+        
+        return true;
+      } else {
+        throw new Error("Failed to update waitlist file");
+      }
     } catch (error) {
       console.error("Error joining waitlist:", error);
       

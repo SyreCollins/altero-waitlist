@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { useWaitlist } from './WaitlistContext';
 import { useAdmin } from './AdminContext';
-import { LogOut, RefreshCw, Search, UserPlus, Users } from 'lucide-react';
+import { LogOut, RefreshCw, Search, UserPlus, Users, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
@@ -12,6 +11,29 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [rawFileContent, setRawFileContent] = useState<string>('');
+  const [showRawFile, setShowRawFile] = useState(false);
+
+  useEffect(() => {
+    fetchRawContent();
+  }, []);
+
+  const fetchRawContent = async () => {
+    try {
+      const storedContent = localStorage.getItem('waitlist-data');
+      
+      if (storedContent) {
+        setRawFileContent(storedContent);
+      } else {
+        const response = await fetch('/src/data/waitlist.txt');
+        const text = await response.text();
+        setRawFileContent(text);
+      }
+    } catch (error) {
+      console.error("Error fetching raw content:", error);
+      setRawFileContent("Error loading waitlist file content");
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -21,6 +43,7 @@ export default function AdminDashboard() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await refreshWaitlist();
+    await fetchRawContent();
     setIsRefreshing(false);
   };
 
@@ -73,6 +96,13 @@ export default function AdminDashboard() {
             </div>
             <div className="flex gap-3">
               <button
+                onClick={() => setShowRawFile(!showRawFile)}
+                className="flex items-center gap-2 bg-dark-800 hover:bg-dark-700 px-4 py-2 rounded-lg transition-colors"
+              >
+                <FileText size={18} />
+                {showRawFile ? "Hide File" : "View File"}
+              </button>
+              <button
                 onClick={handleRefresh}
                 className="flex items-center gap-2 bg-dark-800 hover:bg-dark-700 px-4 py-2 rounded-lg transition-colors"
                 disabled={isRefreshing}
@@ -82,6 +112,17 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
+
+          {showRawFile && (
+            <div className="mb-6 bg-dark-900 rounded-xl p-4 overflow-auto">
+              <h3 className="text-md font-medium mb-2 text-gray-300">
+                waitlist.txt Contents:
+              </h3>
+              <pre className="whitespace-pre-wrap font-mono text-xs text-gray-400 leading-relaxed">
+                {rawFileContent}
+              </pre>
+            </div>
+          )}
 
           <div className="mb-6">
             <div className="relative">
