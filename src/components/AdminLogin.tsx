@@ -1,21 +1,22 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from './AdminContext';
 import { Lock, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login, isAuthenticated } = useAdmin();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Check if already authenticated and redirect
-  React.useEffect(() => {
-    if (isAuthenticated) {
+  // Check if already authenticated and redirect, with proper dependency array
+  useEffect(() => {
+    if (isAuthenticated && location.pathname === '/admin') {
       navigate('/admin/dashboard');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

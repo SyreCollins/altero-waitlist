@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,22 +23,22 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
   const [waitlistEntries, setWaitlistEntries] = useState<WaitlistEntry[]>([]);
   const [waitlistCount, setWaitlistCount] = useState(0);
 
-  // Fetch waitlist on mount
-  useEffect(() => {
-    refreshWaitlist();
-  }, []);
-
-  const refreshWaitlist = async (): Promise<void> => {
+  // Define refreshWaitlist as a useCallback to prevent infinite loops
+  const refreshWaitlist = useCallback(async (): Promise<void> => {
     try {
-      // Fetch waitlist data from Supabase
+      console.log("Fetching waitlist data from Supabase...");
+      // Fetch waitlist data from Supabase with more detailed logging
       const { data, error, count } = await supabase
         .from('waitlist')
         .select('email, created_at', { count: 'exact' })
         .order('created_at', { ascending: false });
       
       if (error) {
+        console.error("Supabase error:", error);
         throw error;
       }
+      
+      console.log("Waitlist data received:", data);
       
       // Transform the data to match our expected format
       const entries: WaitlistEntry[] = data?.map(entry => ({
@@ -48,6 +48,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
       
       setWaitlistEntries(entries);
       setWaitlistCount(count || entries.length);
+      console.log("Waitlist entries set:", entries.length);
       
     } catch (error) {
       console.error("Error fetching waitlist:", error);
@@ -62,7 +63,12 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
       setWaitlistEntries(mockData);
       setWaitlistCount(mockData.length);
     }
-  };
+  }, []);
+
+  // Fetch waitlist on mount with dependency on refreshWaitlist
+  useEffect(() => {
+    refreshWaitlist();
+  }, [refreshWaitlist]);
 
   const joinWaitlist = async (email: string): Promise<boolean> => {
     setLoading(true);

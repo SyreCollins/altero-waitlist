@@ -17,7 +17,7 @@ const ADMIN_PASSWORD = "altero2024";
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  // Check if admin is already logged in on mount
+  // Check if admin is already logged in on mount, using useEffect with an empty dependency array
   useEffect(() => {
     const adminAuth = localStorage.getItem('altero-admin-auth');
     if (adminAuth === 'true') {

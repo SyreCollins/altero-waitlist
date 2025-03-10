@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAdmin } from './AdminContext';
 
 type ProtectedRouteProps = {
@@ -9,8 +9,10 @@ type ProtectedRouteProps = {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated } = useAdmin();
+  const location = useLocation();
 
-  if (!isAuthenticated) {
+  // Prevent infinite redirect by checking the current location
+  if (!isAuthenticated && location.pathname !== '/admin') {
     return <Navigate to="/admin" replace />;
   }
 
