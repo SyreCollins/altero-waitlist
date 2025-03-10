@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type WaitlistEntry = {
   email: string;
@@ -29,34 +30,29 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
 
   const refreshWaitlist = async (): Promise<void> => {
     try {
-      // In a real app, this would be an API call
-      // Here we're simulating reading from the waitlist.txt file
-      const response = await fetch('/src/data/waitlist.txt');
-      const text = await response.text();
+      // Fetch waitlist data from Supabase
+      const { data, error, count } = await supabase
+        .from('waitlist')
+        .select('email, created_at', { count: 'exact' })
+        .order('created_at', { ascending: false });
       
-      // Parse the text file
-      const entries: WaitlistEntry[] = [];
-      const lines = text.split('\n');
-      
-      for (const line of lines) {
-        // Skip comments and empty lines
-        if (line.trim() === '' || line.startsWith('#')) {
-          continue;
-        }
-        
-        const [email, date] = line.split(',');
-        if (email && date) {
-          entries.push({ email: email.trim(), date: date.trim() });
-        }
+      if (error) {
+        throw error;
       }
       
+      // Transform the data to match our expected format
+      const entries: WaitlistEntry[] = data?.map(entry => ({
+        email: entry.email,
+        date: entry.created_at
+      })) || [];
+      
       setWaitlistEntries(entries);
-      setWaitlistCount(entries.length);
+      setWaitlistCount(count || entries.length);
       
     } catch (error) {
       console.error("Error fetching waitlist:", error);
       
-      // Fall back to mock data if file can't be loaded
+      // Fall back to mock data if Supabase query fails
       const mockData: WaitlistEntry[] = [
         { email: "john.doe@example.com", date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
         { email: "jane.smith@example.com", date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
@@ -68,67 +64,40 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateWaitlistFile = async (entries: WaitlistEntry[]): Promise<boolean> => {
-    try {
-      // In a real application, this would be a server-side API call
-      // For this demo, we'll simulate updating the file through localStorage
-      
-      // Convert entries back to file format
-      const headerComments = 
-        "# Waitlist Emails\n" +
-        "# This file simulates a storage for email addresses\n" +
-        "# In a real application, you would use a database or secure storage\n\n" +
-        "# Format: email,date_added\n\n";
-      
-      const entryLines = entries.map(entry => `${entry.email},${entry.date}`).join('\n');
-      const fileContent = headerComments + entryLines + "\n\n";
-      
-      // Store the updated content in localStorage as a simulation
-      localStorage.setItem('waitlist-data', fileContent);
-      
-      // In a real app, you would make an API call here to update the actual file
-      // For the demo, we'll consider this a successful update
-      return true;
-    } catch (error) {
-      console.error("Error updating waitlist file:", error);
-      return false;
-    }
-  };
-
   const joinWaitlist = async (email: string): Promise<boolean> => {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Insert the new entry into Supabase
+      const { error } = await supabase
+        .from('waitlist')
+        .insert([{ email }]);
       
-      // Create new entry
-      const newEntry = {
-        email,
-        date: new Date().toISOString()
-      };
-      
-      // Update local state
-      const updatedEntries = [...waitlistEntries, newEntry];
-      setWaitlistEntries(updatedEntries);
-      setWaitlistCount(prev => prev + 1);
-      
-      // Update the file (simulation)
-      const fileUpdated = await updateWaitlistFile(updatedEntries);
-      
-      if (fileUpdated) {
-        console.log(`Email added to waitlist: ${email}`);
-        
-        toast({
-          title: "Success!",
-          description: "You've been added to the waitlist.",
-          variant: "default",
-        });
-        
-        return true;
-      } else {
-        throw new Error("Failed to update waitlist file");
+      if (error) {
+        // Check if it's a unique constraint violation (email already exists)
+        if (error.code === '23505') {
+          toast({
+            title: "Already registered",
+            description: "This email is already on our waitlist.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        throw error;
       }
+      
+      // Refresh the waitlist to get the latest entries
+      await refreshWaitlist();
+      
+      console.log(`Email added to waitlist: ${email}`);
+      
+      toast({
+        title: "Success!",
+        description: "You've been added to the waitlist.",
+        variant: "default",
+      });
+      
+      return true;
     } catch (error) {
       console.error("Error joining waitlist:", error);
       

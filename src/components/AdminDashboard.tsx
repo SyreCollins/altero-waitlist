@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useWaitlist } from './WaitlistContext';
 import { useAdmin } from './AdminContext';
-import { LogOut, RefreshCw, Search, UserPlus, Users, FileText } from 'lucide-react';
+import { LogOut, RefreshCw, Search, UserPlus, Users, FileText, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from "@/components/ui/use-toast";
 
 export default function AdminDashboard() {
   const { waitlistEntries, refreshWaitlist, waitlistCount } = useWaitlist();
@@ -13,6 +15,7 @@ export default function AdminDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [rawFileContent, setRawFileContent] = useState<string>('');
   const [showRawFile, setShowRawFile] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     fetchRawContent();
@@ -45,6 +48,57 @@ export default function AdminDashboard() {
     await refreshWaitlist();
     await fetchRawContent();
     setIsRefreshing(false);
+  };
+
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    
+    try {
+      // Fetch all waitlist entries for export
+      const { data, error } = await supabase
+        .from('waitlist')
+        .select('email, created_at')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Convert to CSV format
+      const headers = ['Email', 'Date Joined'];
+      const csvData = data.map(entry => [
+        entry.email,
+        format(parseISO(entry.created_at), 'yyyy-MM-dd HH:mm:ss')
+      ]);
+      
+      const csvContent = [
+        headers.join(','),
+        ...csvData.map(row => row.join(','))
+      ].join('\n');
+      
+      // Create and download the file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `altero-waitlist-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Export successful",
+        description: "Your waitlist data has been exported to CSV.",
+      });
+    } catch (error) {
+      console.error("Error exporting waitlist:", error);
+      toast({
+        title: "Export failed",
+        description: "There was an error exporting the waitlist data.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const filteredEntries = waitlistEntries.filter(entry => 
@@ -101,6 +155,14 @@ export default function AdminDashboard() {
               >
                 <FileText size={18} />
                 {showRawFile ? "Hide File" : "View File"}
+              </button>
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 bg-dark-800 hover:bg-dark-700 px-4 py-2 rounded-lg transition-colors"
+                disabled={isExporting || waitlistEntries.length === 0}
+              >
+                <Download size={18} className={isExporting ? "animate-pulse" : ""} />
+                {isExporting ? "Exporting..." : "Export CSV"}
               </button>
               <button
                 onClick={handleRefresh}
