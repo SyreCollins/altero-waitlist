@@ -5,6 +5,9 @@ import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import TaxCalculator from '@/components/TaxCalculator';
 import AppShowcase from '@/components/AppShowcase';
+import FAQ from '@/components/FAQ';
+import SecurityFeatures from '@/components/SecurityFeatures';
+import ComparisonTable from '@/components/ComparisonTable';
 import Waitlist from '@/components/Waitlist';
 import Footer from '@/components/Footer';
 import { WaitlistProvider } from '@/components/WaitlistContext';
@@ -77,6 +80,9 @@ const Index = () => {
         <Features />
         <TaxCalculator />
         <AppShowcase />
+        <SecurityFeatures />
+        <ComparisonTable />
+        <FAQ />
         <Waitlist />
         <Footer />
       </div>
