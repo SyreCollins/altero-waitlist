@@ -24,16 +24,16 @@ const competitors = [
     highlight: "Full-featured financial platform with AI-powered insights"
   },
   {
-    name: "Competitor A",
+    name: "Mint",
     isUs: false,
     features: [true, true, false, false, true, true, true, false, false],
-    highlight: "Basic budgeting app with limited features"
+    highlight: "Basic budgeting app with ads and limited investment tracking"
   },
   {
-    name: "Competitor B",
+    name: "Personal Capital",
     isUs: false,
-    features: [true, true, true, false, false, true, false, true, false],
-    highlight: "Expensive platform missing key analytics"
+    features: [false, true, true, false, true, false, true, true, true],
+    highlight: "Investment-focused with limited budgeting functionality"
   }
 ];
 
@@ -58,7 +58,7 @@ export default function ComparisonTable() {
             How We <span className="text-gradient">Compare</span>
           </h2>
           <p className="text-gray-300 text-lg">
-            See how Altero stacks up against other financial tools in the market.
+            See how Altero stacks up against popular financial tools like Mint and Personal Capital.
           </p>
         </div>
         
