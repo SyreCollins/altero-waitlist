@@ -23,12 +23,12 @@ const faqItems = [
     answer: "Yes! Altero seamlessly connects with over 10,000 financial institutions. You can link checking accounts, savings accounts, credit cards, investment portfolios, retirement accounts, and more to get a comprehensive view of your finances."
   },
   {
-    question: "How does the investment tracking feature work?",
-    answer: "Our investment tracking feature provides real-time updates on your portfolio performance, detailed analytics on asset allocation, and helpful insights on diversification. You can set custom alerts for price changes and receive personalized investment recommendations."
+    question: "How does the investment recommendation feature work?",
+    answer: "Our investment recommendation feature provides personalized investment suggestions based on your financial goals, risk tolerance, and market conditions. We analyze your portfolio and offer insights on potential investment opportunities to help you make informed decisions for long-term wealth building."
   },
   {
     question: "Is there a fee to use Altero?",
-    answer: "Altero offers a free basic plan that includes essential budgeting and expense tracking features. Our premium plans start at $4.99/month and include advanced features like investment tracking, financial goal planning, and personalized wealth-building strategies."
+    answer: "Altero's most basic plan starts at $5/month and includes essential budgeting and expense tracking features. For more advanced features like investment recommendations, financial goal planning, and personalized wealth-building strategies, please see our pricing page for detailed information on our premium plans."
   },
   {
     question: "When will Altero be available to download?",
